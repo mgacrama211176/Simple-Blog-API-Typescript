@@ -28,7 +28,7 @@ router.get(
       const getAllPosts = await Post.find({});
       response.status(200).json({ getAllPosts });
     } catch (err) {
-      console.log(err);
+      response.status(500).json(err);
     }
   }
 );
@@ -77,7 +77,7 @@ router.post(
     });
     try {
       const savePost = await addPost.save();
-      response.status(200).json({ message: `Post added` });
+      response.status(201).json({ message: `Post added` });
     } catch (err) {
       response.status(500).json(err);
     }
@@ -100,7 +100,7 @@ router.put(
         );
         response.status(200).json({ message: "Post Updated" });
       } catch (err) {
-        response.status(500).json(err);
+        response.status(405).json(err);
       }
     } catch (err) {
       response.status(500).json(err);
