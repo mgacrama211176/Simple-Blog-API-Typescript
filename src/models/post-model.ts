@@ -1,19 +1,17 @@
 //imports
-import { Schema, model, connect, Types } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
-// User schema
+// 1. Create an interface representing a document in MongoDB.
+// Post schema
 export interface IPost {
   title: string;
   description: string;
   photo: string;
   username: string;
   category: Types.Array<string>;
-
-  id: number;
-  name: string;
-  email: string;
 }
 
+// 2. Create a Schema corresponding to the document interface.
 const postSchema = new Schema<IPost>({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -22,37 +20,51 @@ const postSchema = new Schema<IPost>({
   category: [{ type: Array }],
 });
 
+// 3. Create a Model.
+
 const Post = model<IPost>('Post', postSchema);
 
+export default Post;
+
 /**
- * Get a new User object.
+ * Get a new Post object.
  *
  * @returns
  */
-// function getNew(name: string, email: string): IUser {
+// function getNewPost(
+//   title: string,
+//   description: string,
+//   photo: string,
+//   username: string,
+//   category: Types.Array<string>
+// ): IPost {
 //   return {
-//     id: -1,
-//     email,
-//     name,
+//     title,
+//     description,
+//     photo,
+//     username,
+//     category,
 //   };
 // }
 
-/**
- * Copy a user object.
- *
-//  * @param user
-//  * @returns
-//  */
-// function copy(user: IUser): IUser {
+// /**
+//  * Copy a user object.
+//  *
+// //  * @param post
+// //  * @returns
+// //  */
+// function copy(post: IPost): IPost {
 //   return {
-//     id: user.id,
-//     email: user.email,
-//     name: user.name,
+//     title: post.title,
+//     description: post.description,
+//     photo: post.photo,
+//     username: post.username,
+//     category: post.category,
 //   };
 // }
 
 // // Export default
 // export default {
-//   new: getNew,
+//   new: getNewPost,
 //   copy,
 // };

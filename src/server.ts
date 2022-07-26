@@ -12,6 +12,8 @@ import apiRouter from './routes/api';
 import logger from 'jet-logger';
 import { CustomError } from '@shared/errors';
 
+import mongoose, { connect, ConnectOptions } from 'mongoose';
+
 // Constants
 const app = express();
 
@@ -33,6 +35,45 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production') {
   app.use(helmet());
 }
+/***********************************************************************************
+ *                        Connection to mongodb
+ **********************************************************************************/
+
+try {
+  // const DBName: string = 'Redcore';
+  mongoose.connect(
+    'mongodb+srv://admin:redcore123@cluster0.fxgjs.mongodb.net',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    } as ConnectOptions
+  );
+  console.log(`connection to DB success`);
+} catch (err) {
+  console.log(err);
+}
+
+// 4. Connect to MongoDB
+
+//   try {
+//     connect(
+//       'mongodb+srv://admin:redcore123@cluster0.fxgjs.mongodb.net',
+
+//     );
+//   } catch (err) {
+//     console.log(err);
+//   }
+
+//   const post = new Post({
+//     title: 'Red Code',
+//     description: 'RedCode Exam',
+//     username: 'admin123',
+//     photo: 'https://i.imgur.com/dM7Thhn.png',
+//   });
+//   await post.save();
+
+//   console.log(post);
+// }
 
 /***********************************************************************************
  *                         API routes and error handling

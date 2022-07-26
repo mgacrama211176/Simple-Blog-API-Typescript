@@ -1,5 +1,5 @@
-import userRepo from '@repos/user-repo';
-import { IUser } from '@models/user-model';
+import postRepo from '@repos/post-repo';
+import { IPost } from '@models/post-model';
 import { UserNotFoundError } from '@shared/errors';
 
 /**
@@ -7,33 +7,33 @@ import { UserNotFoundError } from '@shared/errors';
  *
  * @returns
  */
-function getAll(): Promise<IUser[]> {
-  return userRepo.getAll();
+// function getAll(): Promise<IPost[]> {
+//   return postRepo.getAll();
+// }
+
+/**
+ * Add one post.
+ *
+ * @param username
+ * @returns
+ */
+function addOne(title: IPost): Promise<void> {
+  return postRepo.add(title);
 }
 
 /**
- * Add one user.
+ * Update one post.
  *
- * @param user
+ * @param id
  * @returns
  */
-function addOne(user: IUser): Promise<void> {
-  return userRepo.add(user);
-}
-
-/**
- * Update one user.
- *
- * @param user
- * @returns
- */
-async function updateOne(user: IUser): Promise<void> {
-  const persists = await userRepo.persists(user.id);
-  if (!persists) {
-    throw new UserNotFoundError();
-  }
-  return userRepo.update(user);
-}
+// async function updateOne(id: IPost): Promise<void> {
+//   const persists = await postRepo.persists(id);
+//   if (!persists) {
+//     throw new UserNotFoundError();
+//   }
+//   return postRepo.update(id);
+// }
 
 /**
  * Delete a user by their id.
@@ -41,18 +41,18 @@ async function updateOne(user: IUser): Promise<void> {
  * @param id
  * @returns
  */
-async function deleteOne(id: number): Promise<void> {
-  const persists = await userRepo.persists(id);
-  if (!persists) {
-    throw new UserNotFoundError();
-  }
-  return userRepo.delete(id);
-}
+// async function deleteOne(id: number): Promise<void> {
+//   const persists = await postRepo.persists(id);
+//   if (!persists) {
+//     throw new UserNotFoundError();
+//   }
+//   return postRepo.delete(id);
+// }
 
 // Export default
 export default {
-  getAll,
+  // getAll,
   addOne,
-  updateOne,
-  delete: deleteOne,
+  // updateOne,
+  // delete: deleteOne,
 } as const;
