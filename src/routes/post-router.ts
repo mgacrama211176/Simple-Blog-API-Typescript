@@ -1,53 +1,45 @@
 // import StatusCodes from 'http-status-codes';
-import { Request, Response, Router, NextFunction } from 'express';
-// import mongoose from 'mongoose';
-
-// import postService from '@services/post-service';
-// import { ParamMissingError } from '@shared/errors';
+import { Request, Response, Router, NextFunction } from "express";
 
 //model
-import Post from '../models/post-model';
+import Post from "../models/post-model";
 
 // Constants
 const router = Router();
-// const { CREATED, OK } = StatusCodes;
 
-// Paths
-// export const p = {
-//   get: '/all',
-//   add: '/add',
-//   update: '/update',
-//   delete: '/delete/:id',
-// } as const;
+//GETTING ALL POSTS
+router.get(
+  "/allPosts",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const getAllPosts = await Post.find({});
+      response.status(200).json({ getAllPosts });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
 
-/**
- * Get all users.
- */
-// router.get(p.get, async (_: Request, res: Response) => {
-//   const users = await userService.getAll();
-//   return res.status(OK).json({ users });
-// });
+//GETTING POST DEPENDING ON THE ID
+router.get(
+  "/:id",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const getPost = await Post.findById(request.params.id);
+      response.status(200).json(getPost);
+    } catch (err) {
+      response.status(500).json(err);
+    }
+  }
+);
 
-/**
- * Add one post.
- */
-// router.post(p.add, async (req: Request, res: Response) => {
-//   const { user } = req.body;
-//   // Check param
-//   if (!user) {
-//     throw new ParamMissingError();
-//   }
-//   // Fetch data
-//   await postService.addOne(user);
-//   return res.status(CREATED).end();
-// });
-
+//ADDING OF POST
 router.post(
-  '/post/add',
+  "/add",
   async (request: Request, response: Response, next: NextFunction) => {
     const { title, description, photo, username, category } = request.body;
 
-    const post = new Post({
+    const addPost = new Post({
       title,
       description,
       photo,
@@ -56,11 +48,51 @@ router.post(
     });
 
     try {
-      const savePost = await post.save();
+      const savePost = await addPost.save();
       console.log(savePost);
       response.status(200).json({ message: `Post added` });
     } catch (err) {
-      response.status(500).json({ message: `error` });
+      response.status(500).json(err);
+    }
+  }
+);
+
+//UPDATING POST
+//localhost:3000/api/posts/update/:id
+
+router.put(
+  "/update/:id",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const post = await Post.findById(request.params.id);
+      try {
+        const updatePost = await Post.findByIdAndUpdate(
+          request.params.id,
+          {
+            $set: request.body,
+          },
+          { new: true }
+        );
+        response.status(200).json({ message: "Post Updated" });
+      } catch (err) {
+        response.status(500).json(err);
+      }
+    } catch (err) {
+      response.status(500).json(err);
+    }
+  }
+);
+
+//DELETING OF POST BASED ON THE OBJECT ID
+
+router.delete(
+  "/delete/:id",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const post = await Post.findByIdAndDelete(request.params.id);
+      response.status(200).json({ message: `Post Deleted` });
+    } catch (err) {
+      response.status(500).json(err);
     }
   }
 );

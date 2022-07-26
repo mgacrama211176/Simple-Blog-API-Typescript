@@ -1,5 +1,5 @@
 //imports
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types } from "mongoose";
 
 // 1. Create an interface representing a document in MongoDB.
 // Post schema
@@ -22,49 +22,6 @@ const postSchema = new Schema<IPost>({
 
 // 3. Create a Model.
 
-const Post = model<IPost>('Post', postSchema);
+const Post = model<IPost>("Post", postSchema);
 
 export default Post;
-
-/**
- * Get a new Post object.
- *
- * @returns
- */
-// function getNewPost(
-//   title: string,
-//   description: string,
-//   photo: string,
-//   username: string,
-//   category: Types.Array<string>
-// ): IPost {
-//   return {
-//     title,
-//     description,
-//     photo,
-//     username,
-//     category,
-//   };
-// }
-
-// /**
-//  * Copy a user object.
-//  *
-// //  * @param post
-// //  * @returns
-// //  */
-// function copy(post: IPost): IPost {
-//   return {
-//     title: post.title,
-//     description: post.description,
-//     photo: post.photo,
-//     username: post.username,
-//     category: post.category,
-//   };
-// }
-
-// // Export default
-// export default {
-//   new: getNewPost,
-//   copy,
-// };
