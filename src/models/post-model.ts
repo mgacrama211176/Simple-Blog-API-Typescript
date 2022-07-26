@@ -6,18 +6,18 @@ import { Schema, model, Types } from "mongoose";
 export interface IPost {
   title: string;
   description: string;
-  photo: string;
+  photo: Object;
   username: string;
-  category: Types.Array<string>;
+  category: string;
 }
 
 // 2. Create a Schema corresponding to the document interface.
 const postSchema = new Schema<IPost>({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  photo: { type: String },
+  photo: { type: Object },
   username: { type: String, required: true },
-  category: [{ type: Array }],
+  category: { type: String },
 });
 
 // 3. Create a Model.

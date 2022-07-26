@@ -1,5 +1,6 @@
 // import StatusCodes from 'http-status-codes';
 import { Request, Response, Router, NextFunction } from "express";
+import multer from "multer";
 
 //model
 import Post from "../models/post-model";
@@ -7,9 +8,21 @@ import Post from "../models/post-model";
 // Constants
 const router = Router();
 
+//Store of images
+const storage = multer.diskStorage({
+  destination: (request, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (request, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 //GETTING ALL POSTS
 router.get(
-  "/allPosts",
+  "/",
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const getAllPosts = await Post.find({});
@@ -32,24 +45,38 @@ router.get(
     }
   }
 );
+//GETTING POST DEPENDING ON THE CATEGORY
+router.get(
+  "/category/:category",
+  async (request: Request, response: Response, next: NextFunction) => {
+    const category = request.params.category;
+    console.log(category);
+    try {
+      const findProduct = await Post.find({
+        // aggregation
+        category: { $regex: category, $options: "i" },
+      });
+      response.status(200).json(findProduct);
+    } catch (err) {
+      response.status(500).json(err);
+    }
+  }
+);
 
 //ADDING OF POST
 router.post(
-  "/add",
+  "/",
+  upload.single("photo"),
   async (request: Request, response: Response, next: NextFunction) => {
-    const { title, description, photo, username, category } = request.body;
-
     const addPost = new Post({
-      title,
-      description,
-      photo,
-      username,
-      category,
+      title: request.body.title,
+      description: request.body.description,
+      photo: request.file,
+      username: request.body.username,
+      category: request.body.category,
     });
-
     try {
       const savePost = await addPost.save();
-      console.log(savePost);
       response.status(200).json({ message: `Post added` });
     } catch (err) {
       response.status(500).json(err);
@@ -58,10 +85,8 @@ router.post(
 );
 
 //UPDATING POST
-//localhost:3000/api/posts/update/:id
-
 router.put(
-  "/update/:id",
+  "/:id",
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const post = await Post.findById(request.params.id);
@@ -86,7 +111,7 @@ router.put(
 //DELETING OF POST BASED ON THE OBJECT ID
 
 router.delete(
-  "/delete/:id",
+  "/:id",
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const post = await Post.findByIdAndDelete(request.params.id);
@@ -97,33 +122,4 @@ router.delete(
   }
 );
 
-/**
- * Update one user.
- */
-// router.put(p.update, async (req: Request, res: Response) => {
-//   const { user } = req.body;
-//   // Check param
-//   if (!user) {
-//     throw new ParamMissingError();
-//   }
-//   // Fetch data
-//   await userService.updateOne(user);
-//   return res.status(OK).end();
-// });
-
-/**
- * Delete one user.
- */
-// router.delete(p.delete, async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   // Check param
-//   if (!id) {
-//     throw new ParamMissingError();
-//   }
-//   // Fetch data
-//   await userService.delete(Number(id));
-//   return res.status(OK).end();
-// });
-
-// Export default
 export default router;
