@@ -1,9 +1,9 @@
 // import StatusCodes from 'http-status-codes';
-import { Request, Response, Router, NextFunction } from "express";
-import multer from "multer";
+import { Request, Response, Router, NextFunction } from 'express';
+import multer from 'multer';
 
 //model
-import Post from "../models/post-model";
+import Post from '../models/post-model';
 
 // Constants
 const router = Router();
@@ -11,7 +11,7 @@ const router = Router();
 //Store of images
 const storage = multer.diskStorage({
   destination: (request, file, cb) => {
-    cb(null, "images");
+    cb(null, 'images');
   },
   filename: (request, file, cb) => {
     cb(null, file.originalname);
@@ -22,7 +22,7 @@ const upload = multer({ storage: storage });
 
 //GETTING ALL POSTS
 router.get(
-  "/",
+  '/',
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const getAllPosts = await Post.find({});
@@ -35,7 +35,7 @@ router.get(
 
 //GETTING POST DEPENDING ON THE ID
 router.get(
-  "/:id",
+  '/:id',
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const getPost = await Post.findById(request.params.id);
@@ -45,16 +45,17 @@ router.get(
     }
   }
 );
+
 //GETTING POST DEPENDING ON THE CATEGORY
 router.get(
-  "/category/:category",
+  '/category/:category',
   async (request: Request, response: Response, next: NextFunction) => {
     const category = request.params.category;
     console.log(category);
     try {
       const findProduct = await Post.find({
         // aggregation
-        category: { $regex: category, $options: "i" },
+        category: { $regex: category, $options: 'i' },
       });
       response.status(200).json(findProduct);
     } catch (err) {
@@ -65,8 +66,8 @@ router.get(
 
 //ADDING OF POST
 router.post(
-  "/",
-  upload.single("photo"),
+  '/',
+  upload.single('photo'),
   async (request: Request, response: Response, next: NextFunction) => {
     const addPost = new Post({
       title: request.body.title,
@@ -86,7 +87,8 @@ router.post(
 
 //UPDATING POST
 router.put(
-  "/:id",
+  '/:id',
+  upload.single('photo'),
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const post = await Post.findById(request.params.id);
@@ -95,10 +97,11 @@ router.put(
           request.params.id,
           {
             $set: request.body,
+            photo: request.file,
           },
           { new: true }
         );
-        response.status(200).json({ message: "Post Updated" });
+        response.status(200).json({ message: 'Post Updated' });
       } catch (err) {
         response.status(405).json(err);
       }
@@ -111,7 +114,7 @@ router.put(
 //DELETING OF POST BASED ON THE OBJECT ID
 
 router.delete(
-  "/:id",
+  '/:id',
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       const post = await Post.findByIdAndDelete(request.params.id);
